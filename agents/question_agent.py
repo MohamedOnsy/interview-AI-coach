@@ -12,11 +12,13 @@ class QuestionAgent:
                  role,
                  total_questions=5,
                  level="Entry Level",
-                 personality="Friendly"):
+                 personality="Friendly",
+                 language="en"):
 
         self.role = role
         self.level = level
         self.personality = personality
+        self.language = language
 
         self.total_questions = total_questions
         self.current_question = 0
@@ -31,6 +33,12 @@ class QuestionAgent:
             "start with a question about a real project they might have worked on",
         ]
         chosen_angle = random.choice(angles)
+        language_instruction = (
+            "Generate the interview question ONLY in Arabic."
+            if self.language == "ar"
+            else
+            "Generate the interview question ONLY in English."
+        )
 
         return f"""
 You are a real, professional human interviewer conducting a live interview
@@ -44,8 +52,14 @@ Personality style:
 Candidate level:
 {self.level}
 
+Interview language:
+{language_instruction}
+
+
 Guidance for this question:
 {chosen_angle}
+
+{language_instruction}
 
 Rules:
 - Base the question on the skills, knowledge, and responsibilities typically required for the role "{self.role}", even if you have to infer them yourself
@@ -53,6 +67,11 @@ Rules:
 - Do not explain or justify the question
 - Do not number it
 - Make it sound like something a real interviewer would say out loud
+- If the candidate level is Beginner, ask only simple foundational questions.
+- Do NOT ask advanced system design questions for Beginner.
+- Do NOT ask advanced algorithms for Beginner.
+- Do NOT ask architecture questions for Beginner.
+- Match the difficulty according to the candidate level.
 
 Return ONLY the question text, nothing else.
 """
